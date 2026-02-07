@@ -126,6 +126,26 @@ Test Cases
         * verify graceful error message if available
         * verify user can still filter by selecting State manually
 
+13. Verify user can reschedule appointment
+    * create an appointment via booking flow
+    * verify appointment exists on dashboard
+    * click on "Reschedule"
+    * select a future date/time
+    * ensure modified scan is displayed correctly on dashboard
+
+14. Verify user can cancel appointment
+    * create an appointment via booking flow
+    * verify appointment exists on dashboard
+    * click on "Cancel"
+    * select a reason
+    * verify reason field is required
+    * verify cancellation confirmation display page
+    * verify appointment no longer shows on dashboard
+
+15. Usability testing
+    * verify functionalities work for screen readers
+    * verify keyboard navigation is possible
+
 
 
 ### Part 2
