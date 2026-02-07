@@ -78,7 +78,31 @@ Test Cases
         * depending on location, verify for weekend availability
         * check for holidays
 
-7. 
+7. Verify booking flow works across different browsers and devices
+    * browsers in latest versions (chrome, firefox, safari, edge)
+    * mobile devices (iOS safari, android chrome)
+    * verify all functionality
+    * verify responsive design
+
+8. Verify user must be logged in and session remains active throughout booking
+    * test unauthenticated access
+        * navigate directly to booking URL without login
+    * test session timeout
+        * login and start booking
+        * wait for session timeout
+        * verify redirect to login screen
+
+9. Verify State selection filters location correctly
+    * on "Schedule Your Scan" page, select State: California
+    * verify only California locations display
+    * change state to Florida
+    * verify locations update to only Florida centers
+    * verify "no centers available" message if state has no locations
+    * select location → verify calendar appears
+
+
+Verify "no centers available" message if state has no locations
+Select location → verify calendar appears
 
 ### Part 2
 For the top 3 test cases from part 1, please provide a description explaining why they
