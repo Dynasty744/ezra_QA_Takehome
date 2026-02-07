@@ -257,4 +257,8 @@
 
 ### Part 2: Top 3 Priority Test Cases
 
-**Instructions:** For the top 3 test cases from Part 1, please provide a description explaining why they are indicated as your most important.
+  1. This test case covers the main revenue flow
+  2. Covers financial security, payment methods, and compliance
+  3. Deep test a required component within the main revenue flow
+
+  With these 3 test cases, they form the critical path for  business viability. If any of these fail, then the business cannot generate revenue. Other test cases will support these core functions but isn't immediately critical.
