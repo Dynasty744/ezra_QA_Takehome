@@ -100,9 +100,13 @@ Test Cases
     * verify "no centers available" message if state has no locations
     * select location → verify calendar appears
 
-
-Verify "no centers available" message if state has no locations
-Select location → verify calendar appears
+10. Verify birthdate and sex fields have proper validation
+    * on "Review Your Plan" page, test birthdate field:
+        * leave blank, Continue button should be grayed out
+        * enter invalid date and verify error
+        * enter future date and verify error
+        * enter date making user < 18yrs, verify age handling
+        * enter valid date and verify acceptance 
 
 ### Part 2
 For the top 3 test cases from part 1, please provide a description explaining why they
