@@ -106,7 +106,27 @@ Test Cases
         * enter invalid date and verify error
         * enter future date and verify error
         * enter date making user < 18yrs, verify age handling
-        * enter valid date and verify acceptance 
+        * enter valid date and verify acceptance
+
+11. Verify scan rejection works properly
+    * on "Review Your Plan" page, select Heart CT Scan and Continue
+        * select any ONE of the questions and answer "Yes"
+        * complete the rest of the questions
+    * verify "We're sorry, this product isn't right for you." dialog appears
+    * verify user is able to backtrack from the dialog and choose another scan
+
+12. Verify "Find closest centers to me" feature works correctly with browser location permissions
+    * navigate to "Schedule Your Scan" page
+    * click "Find closest centers to me"
+    * test permission granted:
+        * allow location permission in browser/system
+        * verify centers are sorted by distance to user's location
+    * test permission denied:
+        * deny location persmission
+        * verify graceful error message if available
+        * verify user can still filter by selecting State manually
+
+
 
 ### Part 2
 For the top 3 test cases from part 1, please provide a description explaining why they
