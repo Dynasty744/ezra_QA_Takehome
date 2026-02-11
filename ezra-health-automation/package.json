@@ -1,18 +1,24 @@
 {
   "name": "ezra-health-automation",
   "version": "1.0.0",
-  "description": "Playwright automation framework for end-to-end testing of the Ezra health scan booking flow.",
-  "main": "index.js",
+  "description": "Playwright automation framework for e2e testing of the Ezra health scan booking flow.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report",
+    "test:critical": "playwright test --grep @critical",
+    "test:payment": "playwright test --grep @payment",
+    "test:questionnaire": "playwright test --grep @questionnaire"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["playwright", "healthcare", "automation", "e2e"],
+  "author": "QA Engineering Team",
+  "license": "MIT",
   "devDependencies": {
-    "@playwright/test": "^1.58.2",
-    "@types/node": "^25.2.3",
-    "dotenv": "^17.2.4",
-    "typescript": "^5.9.3"
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.10.0",
+    "dotenv": "^16.3.1",
+    "typescript": "^5.3.0"
   }
 }

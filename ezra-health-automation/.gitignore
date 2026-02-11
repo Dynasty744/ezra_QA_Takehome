@@ -1,1 +1,29 @@
-node_modules
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment
+.env
+
+# Test results
+test-results/
+playwright-report/
+playwright/.cache/
+junit-results.xml
+test-results.json
+
+# Videos and traces
+videos/
+traces/
+screenshots/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
