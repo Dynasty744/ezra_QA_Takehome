@@ -10,7 +10,7 @@ export class LoginPage extends BasePage {
     super(page);
     this.emailInput = page.locator('input[type="email"], input[name="email"], #email');
     this.passwordInput = page.locator('input[type="password"], input[name="password"], #password');
-    this.loginButton = page.locator('button[type="submit"], button:has-text("Log in")');
+    this.loginButton = page.locator('button[type="submit"], button:has-text("Submit")');
   }
 
   async navigate() {
