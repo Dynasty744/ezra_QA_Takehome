@@ -45,7 +45,51 @@
 
 ### Part 2: HTTP requests for Medical Questionnaire Integration Test
 
-- https://stage-api.ezra.com/individuals/member/connect/token
-- https://stage-api.ezra.com/individuals/api/members
-- https://stage-api.ezra.com/diagnostics/api/medicaldata/forms/mq/submissions/745ff2fe-cfca-43a0-a4df-70346df1a720/detail (could extract various IDs)
-- https://stage-api.ezra.com/diagnostics/api/medicaldata/forms/mq/submissions/2697/data (could expose PHI)
+1. https://stage-api.ezra.com/individuals/member/connect/token
+2. https://stage-api.ezra.com/individuals/api/members
+3. https://stage-api.ezra.com/diagnostics/api/medicaldata/forms/mq/submissions/745ff2fe-cfca-43a0-a4df-70346df1a720/detail (could extract various IDs)
+4. https://stage-api.ezra.com/diagnostics/api/medicaldata/forms/mq/submissions/2697/data (could expose PHI)
+
+---
+
+### Part 3: Analysis on endpoints security and QA solutions
+
+#### Situation:
+
+- 100+ endpoints handling PHI
+- Each endpoint could be a potential for breach
+- Manual testing each endpoint for multiple scenarios not possible
+- One missed check would be high risk of breach
+- Security testing needs to be automated, scalable, and embedded into the development process
+
+#### Solution:
+
+##### Automation tests for every endpoint
+
+- Unauthenticated access - token and user role check
+- Cross patient access - one patient should not access another
+- API url tampering - modifying API url for breach
+- API response data leak - should only contain authorized data
+- Tests should be scheduled to run daily
+
+##### Extra layers of security
+
+- Write a CLI tool for developers to run security checks before committing code
+- Introduce security checks on new code push
+- Enforce full test runs during deployment process for envs
+
+#### Thoughts:
+
+##### Negatives
+
+- Heavy initial investment for automation
+- Could impact existing development culture/habits/style
+- Learning curve and maintenance
+- Slow CI/CD pipeline
+
+##### Positives
+
+- After initial investment, payoff multiplies with each test run
+- Greatly reduced manual efforts from automation coverage
+- Easy to scale tests with new endpoints
+- Reduced HIPAA violations and other compliance issues
