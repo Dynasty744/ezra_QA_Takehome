@@ -36,7 +36,7 @@ export class SelectPlanPage extends BasePage {
    */
   async waitForPageLoad() {
     await this.page.waitForLoadState('domcontentloaded');
-    await Promise.race([
+    await Promise.all([
       this.mriScanOption.first().waitFor({ state: 'visible', timeout: 15000 }).catch(() => {})
     ]);
   }
@@ -67,7 +67,7 @@ export class SelectPlanPage extends BasePage {
   async clickContinue() {
     await this.scrollIntoView(this.continueButton);
     await this.safeClick(this.continueButton);
-    await this.waitForURL(/schedule-scan/);
+    await this.waitForURL('/sign-up/select-plan/');
   }
 
   /**
