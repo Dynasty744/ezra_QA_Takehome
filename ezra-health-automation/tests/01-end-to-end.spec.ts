@@ -19,10 +19,10 @@ test.describe('End-to-End Booking Flow', () => {
     
     try {
       await dashboardPage.verifyAppointmentExists('MRI');
-      console.log('  Appointment found - proceeding with cancellation');
+      console.log('  Appointment found - proceed with cancellation');
       await dashboardPage.cancelAppointment('MRI');
     } catch (error) {
-      console.log('  No existing MRI appointment found - skipping cancellation');
+      console.log('  No existing appointment found - skip cancellation');
     }
   });
 
@@ -58,27 +58,22 @@ test.describe('End-to-End Booking Flow', () => {
     const paymentPage = new PaymentPage(page);
     const confirmationPage = new ConfirmationPage(page);
 
-    console.log('Step 1: Logging in...');
-    await loginPage.navigate();
-    await loginPage.loginWithTestUser();
-    await loginPage.verifyLoginSuccess();
-
-    console.log('Step 2: Starting booking flow...');
+    console.log('Step 1: Starting booking flow...');
     await dashboardPage.startBookingFlow();
 
-    console.log('Step 3: Selecting MRI scan...');
+    console.log('Step 2: Selecting MRI scan...');
     await selectPlanPage.completePlanSelection('MRI');
 
-    console.log('Step 4: Scheduling appointment...');
+    console.log('Step 3: Scheduling appointment...');
     await schedulePage.completeScheduleSelection();
 
-    console.log('Step 5: Processing payment...');
+    console.log('Step 4: Processing payment...');
     await paymentPage.completePayment();
 
-    console.log('Step 6: Verifying confirmation...');
+    console.log('Step 5: Verifying confirmation...');
     await confirmationPage.verifyCompleteConfirmation();
 
-    console.log('Step 7: Verifying appointment in dashboard...');
+    console.log('Step 6: Verifying appointment in dashboard...');
     await dashboardPage.navigate();
     await dashboardPage.verifyAppointmentExists('MRI');
     

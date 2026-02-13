@@ -12,7 +12,7 @@ export class DashboardPage extends BasePage {
   }
 
   async navigate() {
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(3000);
     await this.goto('/');
     await this.page.waitForLoadState('domcontentloaded');
   }

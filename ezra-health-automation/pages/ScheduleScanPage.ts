@@ -71,43 +71,20 @@ export class ScheduleScanPage extends BasePage {
   }
 
   /**
-   * Get available future dates from calendar
-   */
-  private async getAvailableDates(): Promise<Locator[]> {
-    const dateButtons = await this.dateButton.all();
-    const availableDates: Locator[] = [];
-    
-    for (const dateBtn of dateButtons) {
-    // Find the parent cell to check for disabled state
-    const cell = dateBtn.locator('xpath=../..'); // Go up to vuecal__cell
-    const classAttribute = await cell.getAttribute('class');
-    
-    // Check if date is NOT disabled and NOT before min
-    if (!classAttribute?.includes('--disabled') && 
-        !classAttribute?.includes('--before-min') &&
-        !classAttribute?.includes('--out-of-scope')) {
-      availableDates.push(dateBtn);
-    }
-  }
-    
-    return availableDates;
-  }
-
-  /**
    * Select first available date from calendar
    */
   async selectFirstAvailableDate() {
-  await this.waitForVisible(this.calendar);
-  
-  // Directly select the first cell without disabled classes
-  const firstAvailableDate = this.page.locator(
-    '.vuecal__cell:not(.vuecal__cell--disabled):not(.vuecal__cell--before-min):not(.vuecal__cell--out-of-scope) .vc-day-content[role="button"]'
-  ).first();
-  
-  await firstAvailableDate.waitFor({ state: 'visible', timeout: 10000 });
-  await firstAvailableDate.click();
-  await this.page.waitForTimeout(1000);
-}
+    await this.waitForVisible(this.calendar);
+    
+    // Directly select the first cell without disabled classes
+    const firstAvailableDate = this.page.locator(
+      '.vuecal__cell:not(.vuecal__cell--disabled):not(.vuecal__cell--before-min):not(.vuecal__cell--out-of-scope) .vc-day-content[role="button"]'
+    ).first();
+    
+    await firstAvailableDate.waitFor({ state: 'visible', timeout: 20000 });
+    await firstAvailableDate.click();
+    await this.page.waitForTimeout(1000);
+  }
 
   /**
    * Select first available time slot
@@ -115,6 +92,33 @@ export class ScheduleScanPage extends BasePage {
   async selectFirstAvailableTimeSlot() {
     await this.waitForVisible(this.timeSlot);
     await this.safeClick(this.timeSlot.first());
+    await this.page.waitForTimeout(500);
+  }
+
+  /**
+   * Select a random available time slot to avoid conflicts
+   * (Improves test reliability by not always picking the first slot which may be taken in parallel test runs)
+   * Note: This assumes the test environment has multiple available slots for the selected date
+   * If the environment is very limited, this may need to be adjusted to ensure it doesn't cause 
+   * flakiness due to no slots being available
+   */
+  async selectRandomAvailableTimeSlot() {
+    await this.timeSlots.first().waitFor({ state: 'visible', timeout: 10000 });
+    
+    // Get all visible time slots
+    const availableSlots = await this.page
+      .locator('.appointments__individual-appointment:visible')
+      .all();
+    
+    if (availableSlots.length === 0) {
+      throw new Error('No time slots available');
+    }
+    
+    // Pick a random slot instead of always the first
+    const randomIndex = Math.floor(Math.random() * availableSlots.length);
+    await availableSlots[randomIndex].click();
+    
+    console.log(`  Selected random time slot ${randomIndex + 1} of ${availableSlots.length}`);
     await this.page.waitForTimeout(500);
   }
 
@@ -133,7 +137,7 @@ export class ScheduleScanPage extends BasePage {
   async completeScheduleSelection() {
     await this.selectFirstLocation();
     await this.selectFirstAvailableDate();
-    await this.selectFirstAvailableTimeSlot();
+    await this.selectRandomAvailableTimeSlot();
     await this.clickContinue();
   }
 }

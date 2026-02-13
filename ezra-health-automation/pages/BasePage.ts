@@ -14,7 +14,7 @@ export class BasePage {
     await this.page.goto(url, { waitUntil: 'domcontentloaded' });
   }
 
-  async waitForVisible(locator: Locator, timeout: number = 15000) {
+  async waitForVisible(locator: Locator, timeout: number = 5000) {
     await locator.waitFor({ state: 'visible', timeout });
   }
 
@@ -55,13 +55,26 @@ export class BasePage {
     await locator.scrollIntoViewIfNeeded().catch(() => {});
   }
 
-  async verifySensitiveDataNotInStorage(sensitiveKeys: string[]) {
+  async verifySensitiveDataNotInStorage() {
     const localStorage = await this.page.evaluate(() => {
       return JSON.stringify(window.localStorage);
     });
     
-    for (const key of sensitiveKeys) {
-      expect(localStorage.toLowerCase()).not.toContain(key.toLowerCase());
+    // 1. Check for sensitive field names
+    const sensitiveFields = ['card_number', 'cvv', 'expiry', 'pan', 'stripe'];
+    for (const field of sensitiveFields) {
+      expect(localStorage.toLowerCase()).not.toContain(field.toLowerCase());
+    }
+    
+    // 2. Check for test card numbers from env vars
+    const testCardNumbers = [
+      process.env.STRIPE_VALID_CARD,
+      process.env.STRIPE_DECLINED_CARD,
+      process.env.STRIPE_INSUFFICIENT_FUNDS_CARD
+    ].filter(Boolean); // Remove undefined/empty values
+    
+    for (const cardNumber of testCardNumbers) {
+      expect(localStorage).not.toContain(cardNumber);
     }
   }
 

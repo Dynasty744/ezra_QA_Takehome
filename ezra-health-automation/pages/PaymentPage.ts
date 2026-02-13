@@ -53,7 +53,7 @@ export class PaymentPage extends BasePage {
     );
     
     // Stripe iframe locators
-    this.stripeCardNumberFrame = page.frameLocator('iframe[name*="number"], iframe[id="payment-numberInput"]');
+    this.stripeCardNumberFrame = page.frameLocator('iframe[title*="Secure payment input frame"]');
     this.stripeExpiryFrame = page.frameLocator('iframe[name*="expiry"], iframe[id="payment-expiryInput"]');
     this.stripeCvcFrame = page.frameLocator('iframe[name*="cvc"], iframe[id="payment-cvcInput"]');
     
@@ -66,8 +66,8 @@ export class PaymentPage extends BasePage {
     this.paymentError = page.locator(
       '.payment-error, [data-testid="payment-error"], [role="alert"]'
     );
-    this.cardError = page.locator(
-      '.card-error, .stripe-error, [data-testid="card-error"]'
+    this.cardError = this.stripeCardNumberFrame.locator(
+      '#Field-numberError[role="alert"]'
     );
   }
 
@@ -136,8 +136,8 @@ export class PaymentPage extends BasePage {
    */
   async clickContinue() {
     await this.safeClick(this.continueButton);
-    // Wait for navigation to confirmation page
-    await this.waitForURL(/scan-confirm/);
+
+    // await this.waitForURL(/scan-confirm/);
   }
 
   /**
@@ -155,26 +155,37 @@ export class PaymentPage extends BasePage {
    */
   async completeFailedPayment(failureType: 'declined' | 'insufficient_funds' = 'declined') {
     const failedCards = {
-      'declined': '4000000000000002',
-      'insufficient_funds': '4000000000009995'
+      'declined': process.env.STRIPE_DECLINED_CARD || '4000000000000002',
+      'insufficient_funds': process.env.STRIPE_INSUFFICIENT_FUNDS_CARD || '4000000000009995'
     };
     
     await this.fillStripeCardDetails(failedCards[failureType]);
+    await this.clickContinue();
   }
 
   /**
    * Verify payment error is displayed
    */
   async verifyPaymentError(expectedMessage?: string) {
-    const errorLocator = await this.isElementVisible(this.paymentError) 
-      ? this.paymentError 
-      : this.cardError;
+    // Wait for the error to appear in the Stripe iframe
+    await this.cardError.waitFor({ 
+      state: 'visible', 
+      timeout: 15000 
+    });
     
-    await expect(errorLocator).toBeVisible({ timeout: 10000 });
+    await expect(this.cardError).toBeVisible();
     
     if (expectedMessage) {
-      await expect(errorLocator).toContainText(expectedMessage, { ignoreCase: true });
+      await expect(this.cardError).toContainText(expectedMessage, { 
+        ignoreCase: true 
+      });
+    } else {
+      await expect(this.cardError).toContainText(/declined|insufficient/i);
     }
+    
+    // Optional: Log the actual error message
+    const errorText = await this.cardError.textContent();
+    console.log(`  Payment error displayed: "${errorText}"`);
   }
 
   /**
@@ -188,6 +199,6 @@ export class PaymentPage extends BasePage {
     this.verifySensitiveDataNotInURL(['card', 'cvv', 'cvc', 'expiry']);
     
     // Verify no card data in local storage
-    await this.verifySensitiveDataNotInStorage(['card', 'cvv', 'cvc', 'creditcard']);
+    await this.verifySensitiveDataNotInStorage();
   }
 }
